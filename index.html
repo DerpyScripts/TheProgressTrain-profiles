@@ -50,43 +50,74 @@
 			}
 		</style>
 	</head>
-	<body class="flex flex-col">
-		<div class="flex-grow py-8"></div>
-		<div>
-			<div class="text-center px-8 mx-auto sm:w-5/6">
-				<div class="flex justify-center flex-wrap mb-2">
-					<div class="m-1 bg-black rounded-lg">
-						<a class="h-full flex items-center cursor-pointer px-3 py-1 text-xl rainbow-bg leading-none font-black text-white text-stroke rounded-lg border-2 border-white hover:border-black focus:border-black">
-							#THEPROGRESSTRAIN
-						</a>
-					</div>
-					<div class="m-1 bg-black rounded-lg">
-						<a class="h-full flex items-center cursor-pointer px-3 py-1 text-xl rainbow-bg leading-none font-black text-white text-stroke rounded-lg border-2 border-white hover:border-black focus:border-black">
-							I SUPPORT<br/>
-							#THEPROGRESSTRAIN
-						</a>
-					</div>
-					<div class="m-1 bg-black rounded-lg">
-						<a class="h-full flex items-center cursor-pointer px-3 py-1 text-xl rainbow-bg leading-none font-black text-white text-stroke rounded-lg border-2 border-white hover:border-black focus:border-black">
-							I BELIEVE<br/>
-							IN PROGRESS
-						</a>
-					</div>
+	<body>
+		<div id="app" class="flex flex-col">
+			<div class="flex-grow py-8"></div>
+			<div class="px-8 mx-auto sm:w-2/3 md:w-1/2 lg:w-1/3">
+				<h2 class="font-hammersmith text-2xl sm:text-3xl text-gray-800 leading-tight mb-2">1. Upload</h2>
+				<input ref="imageUpload" @change="handleImage" class="hidden" type="file" accept="image/*" />
+				<a @click="startUpload" @keypress.enter="startUpload" tabindex="0" class="font-hammersmith text-pink-100 text-xl leading-none rounded-lg cursor-pointer bg-pink-600 hover:bg-pink-700 focus:bg-pink-700" style="padding: 7px 15px 6px;">
+					CLICK TO UPLOAD
+				</a>
+				
+				<h2 class="font-hammersmith text-2xl sm:text-3xl text-gray-800 leading-tight mt-8 mb-1">2. Slogan</h2>
+				<div class="mb-2 font-hammersmith">
+					<a v-for="(s, key) in slogans" :key="key" @click="slogan = key" @keypress.enter="slogan = key" tabindex="0" class="block mb-1 text-xl leading-none rounded-lg cursor-pointer border-2 border-solid focus:outline-none" style="padding: 9px 13px 8px;" :class="{ 'text-pink-600 bg-pink-100 border-pink-600': slogan == key, 'text-gray-600 bg-transparent border-gray-500 hover:border-gray-800 focus:border-gray-800 hover:text-gray-800 focus:text-gray-800': slogan != key }">
+						{{ s }}
+					</a>
 				</div>
-				<div class="flex justify-center flex-wrap">
-					<div class="p-32 bg-gray-300 m-2 rounded-lg">
-						
-					</div>
-					<div class="p-32 bg-gray-300 m-2 rounded-lg">
-						
-					</div>
-				</div>
+				
+				<h2 class="font-hammersmith text-2xl sm:text-3xl text-gray-800 leading-tight mt-6 mb-1">3. Save</h2>
+				<div v-if="uploaded == ''" class="p-24 bg-gray-300 mb-4 rounded-lg"></div>
+				<img v-if="uploaded != ''" :src="uploaded" alt="Result image" class="bg-gray-300 mb-4 rounded-lg" />
+				
+				<a class="font-hammersmith text-pink-100 text-xl leading-none rounded-lg cursor-pointer bg-pink-600 hover:bg-pink-700 focus:bg-pink-700" style="padding: 7px 15px 6px;">
+					CLICK TO DOWNLOAD
+				</a>
 			</div>
+			<div class="flex-grow py-8"></div>
 		</div>
-		<div class="flex-grow py-8"></div>
 		
+		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 		<script>
-			
+			var app = new Vue({
+				el: '#app',
+				data() {
+					return {
+						uploaded: "",
+						slogan: -1,
+						slogans: [
+							"#THEPROGRESSTRAIN",
+							"I SUPPORT #THEPROGRESSTRAIN",
+							"I BELIEVE IN PROGRESS"
+						],
+						overlays: [
+							"",
+							"",
+							""
+						],
+						result: ""
+					}
+				},
+				methods: {
+					startUpload() {
+						this.$refs.imageUpload.click();
+					},
+					handleImage(e) {
+						const selectedImage = e.target.files[0];
+						this.createBase64Image(selectedImage);
+					},
+					createBase64Image(fileObject) {
+						const reader = new FileReader();
+						
+						reader.onload = (e) => {
+							this.uploaded = e.target.result;
+						}
+						
+						reader.readAsBinaryString(fileObject);
+					}
+				}
+			});
 		</script>
 	</body>
 </html>
