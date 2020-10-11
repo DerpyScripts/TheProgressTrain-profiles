@@ -120,6 +120,7 @@
 							"Pronouns: HE/SHE/THEY"
 						],
 						overlay: null,
+						overlayKey: -1,
 						result: "",
 						images_loaded: 0
 					}
@@ -137,6 +138,7 @@
 						tempOverlayImage.onload = this.tempImageLoaded;
 						tempOverlayImage.src = "frames/" + key + ".png";
 						this.overlay = tempOverlayImage;
+						this.overlayKey = key;
 					},
 					startUpload() {
 						this.$refs.imageUpload.click();
@@ -173,7 +175,17 @@
 					process() {
 						var canvas = this.$refs.canvas;
 						var context = canvas.getContext('2d');
-						context.drawImage(this.uploaded, 80, 80, 640, 640);
+						context.clearRect(0, 0, 800, 800);
+						
+						if (this.overlayKey > 2) {
+							var offset = 60;
+							var size = 680;
+						} else {
+							var offset = 80;
+							var size = 640;
+						}
+						
+						context.drawImage(this.uploaded, offset, offset, size, size);
 						context.drawImage(this.overlay, 0, 0, 800, 800);
 						
 						this.result = canvas.toDataURL('data/png');
